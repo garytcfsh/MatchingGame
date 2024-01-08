@@ -15,6 +15,8 @@ namespace MatchingGame.ViewModels
 {
     public partial class MatchingViewModel : ObservableObject
     {
+        private HashSet<Char> CharPair { get; set; } = new HashSet<char>();
+
         private Card PreviousCard = null;
 
         [ObservableProperty]
@@ -27,7 +29,11 @@ namespace MatchingGame.ViewModels
         private Card _selectedCard = new Card();
         partial void OnSelectedCardChanged(Card? oldValue, Card newValue)
         {
-            Debug.WriteLine($"{oldValue?.MatchingId} {newValue?.MatchingId}");
+            if (newValue?.Visible == Visibility.Visible)
+            {
+                return;
+            }
+
             if (newValue != null)
             {
                 newValue.Visible = System.Windows.Visibility.Visible;
@@ -35,40 +41,83 @@ namespace MatchingGame.ViewModels
 
             if (PreviousCard != null && newValue != null)
             {
-                Card preCard = PreviousCard;
-                IsEnabled = false;
-                Task.Run(() =>
+                if (PreviousCard.MatchingId == newValue.MatchingId && newValue.MatchingId != 'x')
                 {
-                    SpinWait.SpinUntil(()=>false, 1000);
+                    char c = PreviousCard.MatchingId;
+                    PreviousCard.IsMatched = true;
+                    newValue.IsMatched = true;
+                    PreviousCard = null;
+                    SelectedCard = null;
+                    if (IsFinish(c))
+                    {
+                        Task.Run(() =>
+                        {
+                            Debug.WriteLine($"FINISH");
+                        });
+                    }
+                }
+                else
+                {
+                    Card preCard = PreviousCard;
+                    IsEnabled = false;
+                    Task.Run(() =>
+                    {
+                        SpinWait.SpinUntil(()=>false, 1000);
 
-                    Application.Current.Dispatcher.Invoke(() => { 
-                        if (preCard != null)
-                        {
-                            preCard.Visible = System.Windows.Visibility.Hidden;
-                            preCard = null;
-                        }
-                        if (SelectedCard != null)
-                        {
-                            SelectedCard.Visible = System.Windows.Visibility.Hidden;
-                            SelectedCard = null;
-                        }
-                        IsEnabled = true;
+                        Application.Current.Dispatcher.Invoke(() => { 
+                            if (preCard != null)
+                            {
+                                preCard.Visible = System.Windows.Visibility.Hidden;
+                                preCard = null;
+                            }
+                            if (SelectedCard != null)
+                            {
+                                SelectedCard.Visible = System.Windows.Visibility.Hidden;
+                                SelectedCard = null;
+                            }
+                            IsEnabled = true;
+                        });
                     });
-                });
+                }
             }
+
             PreviousCard = newValue;
+            if (PreviousCard?.IsMatched == true)
+            {
+                PreviousCard = null;
+            }
         }
 
         public MatchingViewModel()
         {
+            HashSet<Char> charPair = new HashSet<char>();
             string[] imageSrcList = Directory.GetFiles("Images");
             foreach (string path in imageSrcList)
             {
                 var card = new Card();
-                card.MatchingId = Path.GetFileName(path);
+                card.FileName = Path.GetFileName(path);
+                card.MatchingId = card.FileName == null ? 'x' : card.FileName.ToLower()[0];
                 card.Image = Path.GetFullPath(path);
                 Cards.Add(card);
+
+                if (charPair.Contains(card.MatchingId))
+                {
+                    CharPair.Add(card.MatchingId);
+                }
+                charPair.Add(card.MatchingId);
             }
+        }
+
+        private bool IsFinish(char id)
+        {
+            CharPair.Remove(id);
+
+            if (CharPair.Count() == 0)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

@@ -13,12 +13,18 @@ namespace MatchingGame.Models
     public partial class Card : ObservableObject
     {
         [ObservableProperty]
-        private string _matchingId;
+        private string _fileName;
+
+        [ObservableProperty]
+        private char _matchingId;
 
         [ObservableProperty]
         private string _image;
 
         [ObservableProperty]
         private Visibility _visible = Visibility.Hidden;
+
+        [ObservableProperty]
+        private bool isMatched = false;
     }
 }

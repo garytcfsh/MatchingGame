@@ -25,11 +25,5 @@ namespace MatchingGame.Views
         {
             InitializeComponent();
         }
-
-        private void ABC(object sender, SelectionChangedEventArgs e)
-        {
-
-            Debug.WriteLine($"AAAA");
-        }
     }
 }
