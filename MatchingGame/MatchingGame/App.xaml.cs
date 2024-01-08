@@ -10,5 +10,4 @@ namespace MatchingGame
     public partial class App : Application
     {
     }
-
 }

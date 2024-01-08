@@ -1,5 +1,8 @@
-﻿using MatchingGame.ViewModels;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -10,20 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MatchingGame
+namespace MatchingGame.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for MatchingView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MatchingView : UserControl
     {
-        public MatchingViewModel MatchingViewModel = null;
-        public MainWindow()
+        public MatchingView()
         {
             InitializeComponent();
-
-            MatchingViewModel = new MatchingViewModel();
-            DataContext = MatchingViewModel;
         }
     }
 }
