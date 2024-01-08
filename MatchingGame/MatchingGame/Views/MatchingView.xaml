@@ -5,23 +5,88 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MatchingGame.Views"
              xmlns:viewmodels="clr-namespace:MatchingGame.ViewModels"
+             xmlns:models="clr-namespace:MatchingGame.Models"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=viewmodels:MatchingViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <Style TargetType="{x:Type ListBox}" x:Key="PhotoListBoxStyle">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBox}">
+                        <WrapPanel Margin="5" IsItemsHost="True" Orientation="Horizontal"
+                                   ItemHeight="180"
+                                   ItemWidth="180"
+                                   VerticalAlignment="Top" HorizontalAlignment="Stretch" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border SnapsToDevicePixels="True" 
+                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                Background="AliceBlue"
+                                Margin="10"
+                                >
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="Black" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <DataTemplate DataType="{x:Type models:Card}">
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="6">
+                <!-- Drop Shadow -->
+                <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" CornerRadius="4"
+                        Background="#44000000"
+                        Visibility="{Binding Visible}"
+                        >
+                    <Border.RenderTransform>
+                        <TranslateTransform X="5" Y="5" />
+                    </Border.RenderTransform>
+                    <Border.BitmapEffect>
+                        <BlurBitmapEffect Radius="8" />
+                    </Border.BitmapEffect>
+                </Border>
+                <!-- Image Template -->
+                <Border 
+                    Padding="4" Background="White" BorderBrush="#22000000" BorderThickness="2"
+                    Visibility="{Binding Visible}"
+                    >
+                    <Image 
+                        Source="{Binding Image}" 
+                        />
+                </Border>
+            </Grid>
+        </DataTemplate>
+        
+    </UserControl.Resources>
+
+    
     <Grid>
-        <ItemsControl x:Name="StreamsItemsControl" ItemsSource="{Binding Cards}" Background="Black"> 
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid x:Name="CardGrid"  Columns="4" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Border Background="Green" BorderThickness="2" BorderBrush="White" Margin="5" >
-                        <Image Source="{Binding Image}"/>
-                    </Border>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        <ListView
+            IsSynchronizedWithCurrentItem="True"
+            Name="PhotosListBox"
+            Margin="5"
+            Style="{StaticResource PhotoListBoxStyle}"
+            SelectionMode="Single"
+            ItemsSource="{Binding Cards}"
+            SelectedItem="{Binding SelectedCard}"
+            IsEnabled="{Binding IsEnabled}"
+            >
+        </ListView>
     </Grid>
 </UserControl>

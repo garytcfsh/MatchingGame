@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
@@ -16,5 +17,8 @@ namespace MatchingGame.Models
 
         [ObservableProperty]
         private string _image;
+
+        [ObservableProperty]
+        private Visibility _visible = Visibility.Hidden;
     }
 }
