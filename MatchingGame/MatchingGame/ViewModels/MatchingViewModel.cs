@@ -107,6 +107,7 @@ namespace MatchingGame.ViewModels
                 }
                 charPair.Add(card.MatchingId);
             }
+            ShuffleExtension.Shuffle(Cards);
         }
 
         private bool IsFinish(char id)
