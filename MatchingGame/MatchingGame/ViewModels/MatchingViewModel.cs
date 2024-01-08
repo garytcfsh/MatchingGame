@@ -50,10 +50,11 @@ namespace MatchingGame.ViewModels
                     SelectedCard = null;
                     if (IsFinish(c))
                     {
-                        Task.Run(() =>
+                        foreach (var card in Cards)
                         {
-                            Debug.WriteLine($"FINISH");
-                        });
+                            card.Visible = Visibility.Visible;
+                        }
+                        MainWindow.TextViewModel.Print();
                     }
                 }
                 else
