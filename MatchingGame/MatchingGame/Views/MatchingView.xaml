@@ -78,7 +78,32 @@
 
     
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+
+        <DockPanel
+            Grid.Row="0"
+            >
+            <TextBlock Text="配對相同事件的照片" 
+                       VerticalAlignment="Center" FontSize="20" Margin="10, 0, 0, 0" FontWeight="Bold" Foreground="Wheat"/>
+            <TextBlock Text="{Binding LeftCount}" 
+                       DockPanel.Dock="Right"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Right"
+                       FontSize="16" Margin="10, 0, 10, 0" FontWeight="Bold" Foreground="Wheat"/>
+            <TextBlock Text="還剩下組數：" 
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Right"
+                       FontSize="16" Margin="10, 0, 10, 0" FontWeight="Bold" Foreground="Wheat"/>
+
+        </DockPanel>
+        
+        
         <ListView
+            Grid.Row="1"
             IsSynchronizedWithCurrentItem="True"
             Name="PhotosListBox"
             Margin="5"
@@ -87,7 +112,13 @@
             ItemsSource="{Binding Cards}"
             SelectedItem="{Binding SelectedCard}"
             IsEnabled="{Binding IsEnabled}"
+            Panel.ZIndex="0"
             >
         </ListView>
+        <Border
+            Grid.Row="1"
+            Background="#CC000000" Visibility="{Binding PhotoVisibility}" Panel.ZIndex="1">
+            <Image Source="{Binding PhotoPath}" Margin="20"/>
+        </Border>
     </Grid>
 </UserControl>

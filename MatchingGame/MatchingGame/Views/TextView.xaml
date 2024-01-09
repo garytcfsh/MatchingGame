@@ -13,7 +13,7 @@
             Background="#DD000000"
             Foreground="HotPink"
             TextWrapping="Wrap"
-            Margin="10, 10, 10, 30"
+            Margin="10, 10, 10, 10"
             Text="{Binding Text}"
             >
             

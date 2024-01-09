@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using MatchingGame.Models;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -17,7 +18,11 @@ namespace MatchingGame.ViewModels
     {
         private HashSet<Char> CharPair { get; set; } = new HashSet<char>();
 
+        [ObservableProperty]
+        private int _leftCount = 0;
+
         private Card PreviousCard = null;
+        public ConcurrentDictionary<string, Card> PathCardDict { get; set; } = new ConcurrentDictionary<string, Card>();
 
         [ObservableProperty]
         private bool _isEnabled = true;
@@ -89,6 +94,11 @@ namespace MatchingGame.ViewModels
             }
         }
 
+        [ObservableProperty]
+        private Visibility _photoVisibility = Visibility.Collapsed;
+        [ObservableProperty]
+        private string _photoPath = "";
+
         public MatchingViewModel()
         {
             HashSet<Char> charPair = new HashSet<char>();
@@ -96,23 +106,27 @@ namespace MatchingGame.ViewModels
             foreach (string path in imageSrcList)
             {
                 var card = new Card();
-                card.FileName = Path.GetFileName(path);
+                card.FileName = Path.GetFileNameWithoutExtension(path);
                 card.MatchingId = card.FileName == null ? 'x' : card.FileName.ToLower()[0];
                 card.Image = Path.GetFullPath(path);
                 Cards.Add(card);
+                PathCardDict.TryAdd(card.FileName, card);
 
                 if (charPair.Contains(card.MatchingId))
                 {
                     CharPair.Add(card.MatchingId);
+                    LeftCount = CharPair.Count();
                 }
                 charPair.Add(card.MatchingId);
             }
-            ShuffleExtension.Shuffle(Cards);
+            SelectedCard = null;
+            //ShuffleExtension.Shuffle(Cards);
         }
 
         private bool IsFinish(char id)
         {
             CharPair.Remove(id);
+            LeftCount = CharPair.Count();
 
             if (CharPair.Count() == 0)
             {

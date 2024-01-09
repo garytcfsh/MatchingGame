@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using MatchingGame.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -13,8 +14,7 @@ namespace MatchingGame.ViewModels
 {
     public partial class TextViewModel : ObservableObject
     {
-        private string msg = "第一次出去玩";
-        ConcurrentDictionary<string, string> ImageTextDict = new ConcurrentDictionary<string, string>();
+        List<(string, string)> ImageTextDict = new List<(string, string)>();
 
         [ObservableProperty]
         private string _text = "";
@@ -25,7 +25,7 @@ namespace MatchingGame.ViewModels
             string[] filePaths = Directory.GetFiles("Texts");
             foreach (string path in filePaths)
             {
-                ImageTextDict.TryAdd(Path.GetFileName(path), File.ReadAllText(path));
+                ImageTextDict.Add((Path.GetFileNameWithoutExtension(path), File.ReadAllText(path)));
             }
         }
 
@@ -33,9 +33,22 @@ namespace MatchingGame.ViewModels
         {
             Task.Run(() =>
             {
-                foreach (string t in ImageTextDict.Values)
+                Application.Current.Dispatcher.Invoke(() =>
                 {
-                    foreach (var s in t)
+                    MainWindow.MatchingViewModel.PhotoVisibility = Visibility.Visible;
+                });
+                
+                foreach (var pair in ImageTextDict)
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        if (MainWindow.MatchingViewModel.PathCardDict.TryGetValue(pair.Item1, out Card card))
+                        {
+                            MainWindow.MatchingViewModel.PhotoPath = card.Image;
+                        }
+                    });
+
+                    foreach (var s in pair.Item2)
                     {
                         SpinWait.SpinUntil(() => false, 150);
                         Application.Current.Dispatcher.Invoke(() =>
@@ -50,6 +63,11 @@ namespace MatchingGame.ViewModels
                         Text = "";
                     });
                 }
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MainWindow.MatchingViewModel.PhotoVisibility = Visibility.Collapsed;
+                });
             });
         }
     }

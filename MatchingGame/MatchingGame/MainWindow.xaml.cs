@@ -17,16 +17,14 @@ namespace MatchingGame
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MatchingViewModel MatchingViewModel = null;
+        public static MatchingViewModel MatchingViewModel = new MatchingViewModel();
         public static TextViewModel TextViewModel = new TextViewModel();
 
         public MainWindow()
         {
             InitializeComponent();
 
-            MatchingViewModel = new MatchingViewModel();
-            DataContext = MatchingViewModel;
-
+            MV.DataContext = MatchingViewModel;
             TV.DataContext = TextViewModel;
         }
     }
