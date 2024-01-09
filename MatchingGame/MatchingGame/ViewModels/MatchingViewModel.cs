@@ -120,7 +120,7 @@ namespace MatchingGame.ViewModels
                 charPair.Add(card.MatchingId);
             }
             SelectedCard = null;
-            //ShuffleExtension.Shuffle(Cards);
+            ShuffleExtension.Shuffle(Cards);
         }
 
         private bool IsFinish(char id)

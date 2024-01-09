@@ -33,6 +33,8 @@ namespace MatchingGame.ViewModels
         {
             Task.Run(() =>
             {
+                SpinWait.SpinUntil(() => false, 2000);
+
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     MainWindow.MatchingViewModel.PhotoVisibility = Visibility.Visible;
